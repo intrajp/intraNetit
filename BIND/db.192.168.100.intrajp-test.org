@@ -1,0 +1,20 @@
+$ORIGIN .
+$TTL 86400	; 1 day
+100.168.192.in-addr.arpa.	IN SOA	ns-master.intrajp-test.org. hostmaster.intrajp-test.org. (
+				2018060301 ; serial
+				28800      ; refresh (8 hours)
+				14400      ; retry (4 hours)
+				3600000    ; expire (5 weeks 6 days 16 hours)
+				86400      ; minimum (1 day as a negative cache TTL)
+				)
+;
+;NAME SERVER
+;
+
+100.16.172.in-addr.arpa.    IN NS ns-master.intrajp-test.org.
+
+;
+;addresses for reverse mapping
+;
+
+1.100.168.192.in-addr.arpa   IN PTR dhcp-primary.intrajp-test.org.

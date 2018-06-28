@@ -1,0 +1,19 @@
+$ORIGIN .
+$TTL 86400	; 1 day
+intrajp-test.org	IN SOA	ns-master.intrajp-test.org. hostmaster.intrajp-test.org. (
+				2018060301 ; serial
+				21600      ; refresh (6 hours)
+				3600       ; retry (1 hour)
+				604800     ; expire (1 week)
+				86400      ; minimum (1 day)
+				)
+			NS	ns-master.intrajp-test.org.
+
+localhost		A	127.0.0.1
+dhcp-primary		A	192.168.100.1
+ns-master		A	172.16.100.2
+ns-slave		A	172.16.100.3
+
+dhcp1			CNAME	dhcp-primary
+ns1			CNAME	ns-master
+ns2			CNAME	ns-slave
