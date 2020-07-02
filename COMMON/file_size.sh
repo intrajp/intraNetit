@@ -37,7 +37,7 @@ if [ ! -d "${DIRECTORY_GIVEN}" ]; then
     exit 1
 else
     echo "${DIRECTORY_GIVEN} exists."
-    I start.
+    echo "I start."
 fi
 FILE_BASE_EXISTS="filedir_exists"
 FILEDIR_TYPE="filedir_type"
