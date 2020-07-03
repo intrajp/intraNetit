@@ -128,8 +128,6 @@ function mashup_file_size ()
     do
         SIZE_EACH=0
         TYPE_EACH=0
-        #SIZE_EACH=`echo $line | awk '{ print $1 }'`
-        #SIZE_EACH=`echo $line | awk -F" " '{ print $1 }'`
         if [ "${outputfile}" = "${OUTPUTFILE1}" ]; then
             SIZE_EACH=`echo $line | awk -F" " '{ print $1 }'`
             TYPE_EACH=`echo $line | awk -F" " '{ print $2 }'`
@@ -137,7 +135,6 @@ function mashup_file_size ()
             SIZE_EACH=`echo $line | awk -F":" '{ print $1 }'`
             TYPE_EACH=`echo $line | awk -F":" '{ print $2 }'`
         fi
-        #TYPE_EACH=`echo $line | awk -F" " '{ print $2 }'`
         if [ "${TYPE_EACH_PRE}" != "" ]; then
             if [ "${TYPE_EACH}" != "${TYPE_EACH_PRE}" ]; then
                 echo "${SIZE_ALL_AS_TYPE}:${TYPE_EACH_PRE}" >> "${outputfile}"   
