@@ -26,9 +26,9 @@
 ## Execute this script.
 ## Result file is  ./output_intrajp/data_file_size_final
 ##
-## Version: v0.0.3
+## Version: v0.0.4
 ## Written by shintaro fujiwara
-#################################3
+#################################
 echo "This program creates a file in the current directory as file size as types."
 echo -n "Directory you want to know file size as types:"
 read DIRECTORY_GIVEN 
@@ -39,7 +39,7 @@ else
     echo "${DIRECTORY_GIVEN} exists."
     echo "I start."
 fi
-
+#################################
 FILE_BASE_EXISTS="filedir_exists"
 FILEDIR_TYPE="filedir_type"
 FILEDIR_TYPE_PRE="filedir_type_pre"
@@ -56,10 +56,12 @@ FILE_COMPLETE3="${OUTPUTDIR}/file_complete3"
 OUTPUTFILE1="${OUTPUTDIR}/calculated_type_full_name" ## save this file
 OUTPUTFILE2="${OUTPUTDIR}/calculated_type_final"
 FILE_COMPLETE_FINAL="${OUTPUTDIR}/data_file_size_final"
-################################
+
+## entry point ##
+
 find ${DIRECTORY_GIVEN} -type f -size +1c -exec file {} \; > "${FILEDIR_TYPE_PRE}"
 grep -v "cannot open" "${FILEDIR_TYPE_PRE}" > "${FILEDIR_TYPE}"
-###########unlink "${FILEDIR_TYPE_PRE}"
+unlink "${FILEDIR_TYPE_PRE}"
 ## print all fields but last one
 awk -F": " '{ print $1 }'  "${FILEDIR_TYPE}" > "${FILE_BASE_EXISTS}"
 awk -F": " '{ print $2 }'  "${FILEDIR_TYPE}" > "${DATA_FILEDIR_TYPE}"
@@ -97,7 +99,7 @@ else
     exit 1
 fi
 
-##########unlink "${FILEDIR_TYPE}" 
+unlink "${FILEDIR_TYPE}" 
 awk '{ print $1 }' "${FILEDIR_SIZE}" > "${DATA_FILEDIR_SIZE}"
 unlink "${FILEDIR_SIZE}" 
 paste "${DATA_FILEDIR_SIZE}" "${DATA_FILEDIR_TYPE}" > "${DATA_FILEDIR_TYPE_SIZE}"
