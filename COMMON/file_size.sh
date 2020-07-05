@@ -29,8 +29,8 @@
 ## Version: v0.0.6
 ## Written by shintaro fujiwara
 #################################
-echo "This program creates a file in the current directory as file size as types."
-echo -n "Directory you want to know file size as types:"
+echo "This program creates a file in the current directory as file size by file type."
+echo -n "Directory you want to know file size by file type:"
 read DIRECTORY_GIVEN 
 if [ ! -d "${DIRECTORY_GIVEN}" ]; then
     echo "${DIRECTORY_GIVEN} does not exist."
