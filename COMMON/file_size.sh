@@ -26,7 +26,7 @@
 ## Execute this script.
 ## Result file is  ./output_intrajp/data_file_size_final
 ##
-## Version: v0.0.6
+## Version: v0.0.7
 ## Written by shintaro fujiwara
 #################################
 echo "This program creates a file in the current directory as file size by file type."
