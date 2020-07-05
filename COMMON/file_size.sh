@@ -26,8 +26,8 @@
 ## Execute this script.
 ## Result file is  ./output_intrajp/data_file_size_final
 ##
-## Version: v0.0.7
-## Written by shintaro fujiwara
+## Version: v0.0.8
+## Written by Shintaro Fujiwara
 #################################
 echo "This program creates a file in the current directory as file size by file type."
 echo -n "Directory you want to know file size by file type:"
@@ -134,14 +134,14 @@ function mashup_file_size ()
         TYPE_EACH=0
         if [ "${outputfile}" = "${OUTPUTFILE1}" ]; then
             SIZE_EACH=`echo $line | awk -F" " '{ print $1 }'`
-            TYPE_EACH=`echo $line | awk -F" " '{ print $2" "$3" "$4" "$5" "$6" "$7" "$8" "$9" "$10 }'`
+            TYPE_EACH=`echo $line | awk -F" " '{ s = ""; for (i = 2; i <= NF; i++) s = s $i " "; print s }'`
         else
             SIZE_EACH=`echo $line | awk -F":" '{ print $1 }'`
             TYPE_EACH=`echo $line | awk -F":" '{ print $2 }'`
         fi
         if [ "${TYPE_EACH_PRE}" != "" ]; then
             if [ "${TYPE_EACH}" != "${TYPE_EACH_PRE}" ]; then
-                if [ "${SIZE_ALL_AS_TYPE}" -ne 0 ]; then
+                if [ "${SIZE_ALL_AS_TYPE}" -gt 0 ]; then
                     echo "${SIZE_ALL_AS_TYPE}:${TYPE_EACH_PRE}" >> "${outputfile}"   
                 fi
                 if [ "${outputfile}" = "${OUTPUTFILE2}" ]; then
