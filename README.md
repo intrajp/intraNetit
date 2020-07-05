@@ -4,7 +4,8 @@
 Help to build intranet environment
 
 COMMON
-### Output file size as type in a certain directory.
+
+Output file size as type in a certain directory.
 
 DHCP
 

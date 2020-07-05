@@ -26,7 +26,7 @@
 ## Execute this script.
 ## Result file is  ./output_intrajp/data_file_size_final
 ##
-## Version: v0.0.5
+## Version: v0.0.6
 ## Written by shintaro fujiwara
 #################################
 echo "This program creates a file in the current directory as file size as types."
@@ -53,7 +53,7 @@ FILE_COMPLETE2="${OUTPUTDIR}/file_complete2"
 FILE_COMPLETE2_1="${OUTPUTDIR}/file_complete2_1"
 FILE_COMPLETE2_2="${OUTPUTDIR}/file_complete2_2"
 FILE_COMPLETE3="${OUTPUTDIR}/file_complete3"
-OUTPUTFILE1="${OUTPUTDIR}/calculated_type_full_name" ## save this file
+OUTPUTFILE1="${OUTPUTDIR}/calculated_type_full_name"
 OUTPUTFILE2="${OUTPUTDIR}/calculated_type_final"
 FILE_COMPLETE_FINAL="${OUTPUTDIR}/data_file_size_final"
 
@@ -70,8 +70,7 @@ CNT=1
 while read line 
 do
     # read file and eliminate line from filedir_type which could not be read
-    #file_size_raw=$(wc -c < "$line") 2>&1
-    file_size_raw=$(wc -c < "$line") 2>&1 >/dev/null
+    file_size_raw=$(wc -c < "$line") 2>&1
     if [ "$file_size_raw" ]; then
         echo "$file_size_raw"" ""$line"
     else
@@ -121,6 +120,11 @@ mkdir "${OUTPUTDIR}"
 function mashup_file_size ()
 {
     SIZE_ALL=0
+    SIZE_ALL_AS_TYPE_G=0
+    SIZE_ALL_AS_TYPE_M=0
+    SIZE_ALL_AS_TYPE_K=0
+    SIZE_ALL_AS_TYPE=0
+
     local file="${1}"
     local outputfile="${2}"
     local cnt=1
@@ -130,14 +134,16 @@ function mashup_file_size ()
         TYPE_EACH=0
         if [ "${outputfile}" = "${OUTPUTFILE1}" ]; then
             SIZE_EACH=`echo $line | awk -F" " '{ print $1 }'`
-            TYPE_EACH=`echo $line | awk -F" " '{ print $2 }'`
+            TYPE_EACH=`echo $line | awk -F" " '{ print $2" "$3" "$4" "$5" "$6" "$7" "$8" "$9" "$10 }'`
         else
             SIZE_EACH=`echo $line | awk -F":" '{ print $1 }'`
             TYPE_EACH=`echo $line | awk -F":" '{ print $2 }'`
         fi
         if [ "${TYPE_EACH_PRE}" != "" ]; then
             if [ "${TYPE_EACH}" != "${TYPE_EACH_PRE}" ]; then
-                echo "${SIZE_ALL_AS_TYPE}:${TYPE_EACH_PRE}" >> "${outputfile}"   
+                if [ "${SIZE_ALL_AS_TYPE}" -ne 0 ]; then
+                    echo "${SIZE_ALL_AS_TYPE}:${TYPE_EACH_PRE}" >> "${outputfile}"   
+                fi
                 if [ "${outputfile}" = "${OUTPUTFILE2}" ]; then
                     SIZE_ALL=$((SIZE_ALL_AS_TYPE + SIZE_ALL))
                 fi
@@ -150,18 +156,35 @@ function mashup_file_size ()
     done < "${file}" 
 }
 
-mashup_file_size "${DATA_FILEDIR_TYPE_SIZE_SORT}" "${OUTPUTFILE1}" 
-unlink "${DATA_FILEDIR_TYPE_SIZE_SORT}" 
-## here we want to cut long type name
-awk -F"," '{ print $1 }' "${OUTPUTFILE1}" >  "${FILE_COMPLETE2}"
-sort -t : -k 2,2 "${FILE_COMPLETE2}" > "${FILE_COMPLETE2_1}"
-mashup_file_size "${FILE_COMPLETE2_1}" "${OUTPUTFILE2}" 
-unlink "${FILE_COMPLETE2}"
-unlink "${FILE_COMPLETE2_1}"
-sort -t : -n -r "${OUTPUTFILE2}" > ${FILE_COMPLETE_FINAL}
-unlink "${OUTPUTFILE2}" 
-echo "" >> "${FILE_COMPLETE_FINAL}"
-echo $SIZE_ALL" : All files (size)" >> "${FILE_COMPLETE_FINAL}"
+LINES=$(wc -l "${DATA_FILEDIR_TYPE_SIZE_SORT}" | awk '{ print $1 }')
+
+GOON=1
+if [ "${LINES}" -gt 1 ]; then
+    mashup_file_size "${DATA_FILEDIR_TYPE_SIZE_SORT}" "${OUTPUTFILE1}" 
+    echo "${SIZE_ALL_AS_TYPE}: ${TYPE_EACH_PRE}" >> "${OUTPUTFILE1}"
+    if [ ! -e "${OUTPUTFILE1}" ]; then
+        echo "${SIZE_ALL_AS_TYPE}: ${TYPE_EACH_PRE}" > "${FILE_COMPLETE_FINAL}"
+        GOON=0
+    fi
+    if [ "${GOON}" = 1 ]; then
+        unlink "${DATA_FILEDIR_TYPE_SIZE_SORT}" 
+        ## here we want to cut long type name
+        awk -F"," '{ print $1 }' "${OUTPUTFILE1}" >  "${FILE_COMPLETE2}"
+        unlink "${OUTPUTFILE1}" 
+        sort -t : -k 2,2 "${FILE_COMPLETE2}" > "${FILE_COMPLETE2_1}"
+        mashup_file_size "${FILE_COMPLETE2_1}" "${OUTPUTFILE2}" 
+        echo "${SIZE_ALL_AS_TYPE}: ${TYPE_EACH_PRE}" >> "${OUTPUTFILE2}"
+        SIZE_ALL=$((SIZE_ALL_AS_TYPE + SIZE_ALL))
+        unlink "${FILE_COMPLETE2}"
+        unlink "${FILE_COMPLETE2_1}"
+        sort -t : -n -r "${OUTPUTFILE2}" > ${FILE_COMPLETE_FINAL}
+        unlink "${OUTPUTFILE2}" 
+        echo "" >> "${FILE_COMPLETE_FINAL}"
+        echo "${SIZE_ALL}:All files" >> "${FILE_COMPLETE_FINAL}"
+    fi
+else
+    mv "${DATA_FILEDIR_TYPE_SIZE_SORT}" "${FILE_COMPLETE_FINAL}"
+fi
 
 unlink "${FILE_BASE_EXISTS}"
 
