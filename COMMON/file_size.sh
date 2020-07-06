@@ -26,7 +26,7 @@
 ## Execute this script.
 ## Result file is  ./output_intrajp/data_file_size_final
 ##
-## Version: v0.0.8
+## Version: v0.1.0
 ## Written by Shintaro Fujiwara
 #################################
 echo "This program creates a file in the current directory as file size by file type."
@@ -43,6 +43,7 @@ fi
 FILE_BASE_EXISTS="filedir_exists"
 FILEDIR_TYPE="filedir_type"
 FILEDIR_TYPE_PRE="filedir_type_pre"
+FILEDIR_SIZE_PRE="filedir_size_pre"
 FILEDIR_SIZE="filedir_size"
 DATA_FILEDIR_TYPE="data_filedir_type"
 DATA_FILEDIR_SIZE="data_filedir_size"
@@ -59,51 +60,39 @@ FILE_COMPLETE_FINAL="${OUTPUTDIR}/data_file_size_final"
 
 ## entry point ##
 
-find ${DIRECTORY_GIVEN} -type f -size +1c -exec file {} \; > "${FILEDIR_TYPE_PRE}"
-grep -v "cannot open" "${FILEDIR_TYPE_PRE}" > "${FILEDIR_TYPE}"
-unlink "${FILEDIR_TYPE_PRE}"
-## print all fields but last one
-awk -F": " '{ print $1 }'  "${FILEDIR_TYPE}" > "${FILE_BASE_EXISTS}"
-awk -F": " '{ print $2 }'  "${FILEDIR_TYPE}" > "${DATA_FILEDIR_TYPE}"
+find ${DIRECTORY_GIVEN} -type f -size +1c | xargs ls -l > "${FILEDIR_SIZE_PRE}"
+grep -v "cannot open" "${FILEDIR_SIZE_PRE}" > "${FILEDIR_SIZE}"
+unlink "${FILEDIR_SIZE_PRE}"
+awk -F" " '{ print $9 }'  "${FILEDIR_SIZE}" > "${FILE_BASE_EXISTS}"
+file -f "${FILE_BASE_EXISTS}" > "${FILEDIR_TYPE}"
+awk -F" " '{ s = ""; for (i = 2; i <= NF; i++) s = s $i " "; print s }' "${FILEDIR_TYPE}" > "${DATA_FILEDIR_TYPE}"
+awk -F" " '{ print $5 }'  "${FILEDIR_SIZE}" > "${DATA_FILEDIR_SIZE}"
+rev "${FILEDIR_TYPE}" > "${FILEDIR_TYPE}2"
+awk -F" " '{ s = ""; for (i = 2; i <= NF; i++) s = s $i " "; print s }' "${FILEDIR_TYPE}2" > "${FILEDIR_TYPE}3"
+rev "${FILEDIR_TYPE}3" > "${FILEDIR_TYPE}4"
+awk -F" " '{ print $1 }'  "${FILEDIR_TYPE}" > file_name_from_filetype
+awk -F" " '{ print $9":" }'  "${FILEDIR_SIZE}" > file_name_from_filesize 
+FILE_NAME_FROM_FILESIZE_COUNT=$(wc -c < file_name_from_filesize)
+FILE_NAME_FROM_FILETYPE_COUNT=$(wc -c < file_name_from_filetype)
 
-CNT=1
-while read line 
-do
-    # read file and eliminate line from filedir_type which could not be read
-    file_size_raw=$(wc -c < "$line") 2>&1
-    if [ "$file_size_raw" ]; then
-        echo "$file_size_raw"" ""$line"
-    else
-        sed -i "${CNT}"d "${FILEDIR_TYPE}"
-    fi
-    CNT=$((CNT + 1))
-done <	"${FILE_BASE_EXISTS}" > "${FILEDIR_SIZE}"
-
-# check if the line numbers are the same. 
-lines_filedir_type=$(wc -l "${FILEDIR_TYPE}" | awk '{ print $1 }')
-lines_filedir_size=$(wc -l "${FILEDIR_SIZE}" | awk '{ print $1 }')
-
-if [ $lines_filedir_type -eq $lines_filedir_size ]; then
-    echo "filedir_type:${lines_filedir_type}"
-    echo "filedir_size:${lines_filedir_size}"
-    echo ""
+if [ "${FILE_NAME_FROM_FILESIZE_COUNT}" -eq "${FILE_NAME_FROM_FILETYPE_COUNT}" ]; then
+    echo "Seems like filename from filesize and filename from filetype is the same."
     echo "OK to proceed."
     echo "I start in 5 seconds."
     sleep 5 
 else
-    echo "filedir_type:${lines_filedir_type}"
-    echo "filedir_size:${lines_filedir_size}"
-    echo ""
     echo "Something went wrong. Maybe you should tweak a file."
     exit 1
 fi
 
 unlink "${FILEDIR_TYPE}" 
-awk '{ print $1 }' "${FILEDIR_SIZE}" > "${DATA_FILEDIR_SIZE}"
+unlink "${FILEDIR_TYPE}2" 
+unlink "${FILEDIR_TYPE}3" 
+unlink "${FILEDIR_TYPE}4" 
 unlink "${FILEDIR_SIZE}" 
 paste "${DATA_FILEDIR_SIZE}" "${DATA_FILEDIR_TYPE}" > "${DATA_FILEDIR_TYPE_SIZE}"
-unlink "${DATA_FILEDIR_TYPE}"
 unlink "${DATA_FILEDIR_SIZE}"
+unlink "${DATA_FILEDIR_TYPE}"
 sort -t " " -k 2,2 "${DATA_FILEDIR_TYPE_SIZE}" > "${DATA_FILEDIR_TYPE_SIZE_SORT}"
 unlink "${DATA_FILEDIR_TYPE_SIZE}"
 
