@@ -26,7 +26,7 @@
 ## Execute this script.
 ## Result file is  ./output_intrajp/data_file_size_final
 ##
-## Version: v0.1.0
+## Version: v0.1.1
 ## Written by Shintaro Fujiwara
 #################################
 echo "This program creates a file in the current directory as file size by file type."
@@ -100,6 +100,7 @@ SIZE_ALL=0
 SIZE_ALL_AS_TYPE=0
 TYPE_EACH_PRE=""
 TYPE_EACH=""
+TYPE_EACH_J=""
 
 if [ -d "${OUTPUTDIR}" ]; then
     rm -rf "${OUTPUTDIR}" 
@@ -120,7 +121,8 @@ function mashup_file_size ()
     while read line 
     do
         SIZE_EACH=0
-        TYPE_EACH=0
+        TYPE_EACH=""
+        TYPE_EACH_J=""
         if [ "${outputfile}" = "${OUTPUTFILE1}" ]; then
             SIZE_EACH=`echo $line | awk -F" " '{ print $1 }'`
             TYPE_EACH=`echo $line | awk -F" " '{ s = ""; for (i = 2; i <= NF; i++) s = s $i " "; print s }'`
@@ -151,6 +153,7 @@ GOON=1
 if [ "${LINES}" -gt 1 ]; then
     mashup_file_size "${DATA_FILEDIR_TYPE_SIZE_SORT}" "${OUTPUTFILE1}" 
     echo "${SIZE_ALL_AS_TYPE}: ${TYPE_EACH_PRE}" >> "${OUTPUTFILE1}"
+    sed -i -e 's/: /:/g' "${OUTPUTFILE1}" 
     if [ ! -e "${OUTPUTFILE1}" ]; then
         echo "${SIZE_ALL_AS_TYPE}: ${TYPE_EACH_PRE}" > "${FILE_COMPLETE_FINAL}"
         GOON=0
@@ -164,6 +167,7 @@ if [ "${LINES}" -gt 1 ]; then
         mashup_file_size "${FILE_COMPLETE2_1}" "${OUTPUTFILE2}" 
         echo "${SIZE_ALL_AS_TYPE}: ${TYPE_EACH_PRE}" >> "${OUTPUTFILE2}"
         SIZE_ALL=$((SIZE_ALL_AS_TYPE + SIZE_ALL))
+        sed -i -e 's/: /:/g' "${OUTPUTFILE2}" 
         unlink "${FILE_COMPLETE2}"
         unlink "${FILE_COMPLETE2_1}"
         sort -t : -n -r "${OUTPUTFILE2}" > ${FILE_COMPLETE_FINAL}
