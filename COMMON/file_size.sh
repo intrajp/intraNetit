@@ -26,7 +26,7 @@
 ## Execute this script.
 ## Result file is  ./output_intrajp/data_file_size_final
 ##
-## Version: v0.1.2
+## Version: v0.1.3
 ## Written by Shintaro Fujiwara
 #################################
 echo "This program creates a file in the current directory as file size by file type."
@@ -175,9 +175,15 @@ if [ "${LINES}" -gt 1 ]; then
         echo "${SIZE_ALL}:All files" >> "${FILE_COMPLETE_FINAL}"
     fi
 else
-    mv "${DATA_FILEDIR_TYPE_SIZE_SORT}" "${FILE_COMPLETE_FINAL}"
+    SIZE_ALL=$(awk -F" " '{ print $1 }' "${DATA_FILEDIR_TYPE_SIZE_SORT}")
+    FILE_TYPE_ONLY=$(awk -F" " '{ s = ""; for (i = 2; i <= NF; i++) s = s $i " "; print s }' "${DATA_FILEDIR_TYPE_SIZE_SORT}")
+    echo "${SIZE_ALL}:${FILE_TYPE_ONLY}" > "${FILE_COMPLETE_FINAL}"
+    echo "" >> "${FILE_COMPLETE_FINAL}"
+    echo "${SIZE_ALL}:All files" >> "${FILE_COMPLETE_FINAL}"
 fi
 
+unlink file_name_from_filesize
+unlink file_name_from_filetype
 unlink "${FILE_BASE_EXISTS}"
 
 echo ""
