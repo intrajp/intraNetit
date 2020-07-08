@@ -26,7 +26,7 @@
 ## Execute this script.
 ## Result file is  ./output_intrajp/data_file_size_final
 ##
-## Version: v0.1.1
+## Version: v0.1.2
 ## Written by Shintaro Fujiwara
 #################################
 echo "This program creates a file in the current directory as file size by file type."
@@ -76,6 +76,7 @@ FILE_NAME_FROM_FILESIZE_COUNT=$(wc -c < file_name_from_filesize)
 FILE_NAME_FROM_FILETYPE_COUNT=$(wc -c < file_name_from_filetype)
 
 if [ "${FILE_NAME_FROM_FILESIZE_COUNT}" -eq "${FILE_NAME_FROM_FILETYPE_COUNT}" ]; then
+    echo ""
     echo "Seems like filename from filesize and filename from filetype is the same."
     echo "OK to proceed."
     echo "I start in 5 seconds."
@@ -100,7 +101,6 @@ SIZE_ALL=0
 SIZE_ALL_AS_TYPE=0
 TYPE_EACH_PRE=""
 TYPE_EACH=""
-TYPE_EACH_J=""
 
 if [ -d "${OUTPUTDIR}" ]; then
     rm -rf "${OUTPUTDIR}" 
@@ -122,7 +122,6 @@ function mashup_file_size ()
     do
         SIZE_EACH=0
         TYPE_EACH=""
-        TYPE_EACH_J=""
         if [ "${outputfile}" = "${OUTPUTFILE1}" ]; then
             SIZE_EACH=`echo $line | awk -F" " '{ print $1 }'`
             TYPE_EACH=`echo $line | awk -F" " '{ s = ""; for (i = 2; i <= NF; i++) s = s $i " "; print s }'`
@@ -166,8 +165,8 @@ if [ "${LINES}" -gt 1 ]; then
         sort -t : -k 2,2 "${FILE_COMPLETE2}" > "${FILE_COMPLETE2_1}"
         mashup_file_size "${FILE_COMPLETE2_1}" "${OUTPUTFILE2}" 
         echo "${SIZE_ALL_AS_TYPE}: ${TYPE_EACH_PRE}" >> "${OUTPUTFILE2}"
-        SIZE_ALL=$((SIZE_ALL_AS_TYPE + SIZE_ALL))
         sed -i -e 's/: /:/g' "${OUTPUTFILE2}" 
+        SIZE_ALL=$((SIZE_ALL_AS_TYPE + SIZE_ALL))
         unlink "${FILE_COMPLETE2}"
         unlink "${FILE_COMPLETE2_1}"
         sort -t : -n -r "${OUTPUTFILE2}" > ${FILE_COMPLETE_FINAL}
