@@ -31,7 +31,7 @@
 ## Result file is  ./output_intrajp/$3
 ## You will find implementation of this script in 'https://github.com/intrajp/tool_datatype'.
 ##
-## Version: v0.1.6m
+## Version: v0.1.7m
 ## Written by Shintaro Fujiwara
 #################################
 FILE_BASE_EXISTS="filedir_exists"
@@ -214,11 +214,18 @@ function do_calculate_size ()
     popd
 }
 
-if [ -z "${1}" ]; then
+if [ -z "${1}" ] || [ -z "${2}" ] || [ -z "${3}" ] ; then
     exit 1
-fi
-if [ -z "${2}" ]; then
-    exit 1
+else
+    if [ ! -d "${1}" ]; then
+        exit 1
+    fi
+    if [ ! -d "${2}" ]; then
+        exit 1
+    fi
+    if [ ! -d "${3}" ]; then
+        exit 1
+    fi
 fi
 
 if [ ! -d "${2}/${OUTPUTDIR}" ]; then
