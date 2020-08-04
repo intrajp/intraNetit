@@ -31,7 +31,7 @@
 ## Result file is  ./output_intrajp/$3
 ## You will find implementation of this script in 'https://github.com/intrajp/tool_datatype'.
 ##
-## Version: v0.1.7m
+## Version: v0.1.8m
 ## Written by Shintaro Fujiwara
 #################################
 FILE_BASE_EXISTS="filedir_exists"
@@ -93,9 +93,9 @@ function mashup_file_size ()
 }
 
 # This function is the main function of this script
-# $1: root directory which is to be calculated which should be full path
-# $2: working directory in which 'output_intrajp' directory is created
-# $3: sub directory which is actually calculated 
+# $1: root directory of an absolute path of which is to be calculated which should be full path
+# $2: working directory of an absolute path in which 'output_intrajp' directory is created
+# $3: sub directory of a relative path from $1 of which is actually calculated 
 function do_calculate_size ()
 {
     ## entry point ##
@@ -229,7 +229,7 @@ else
 fi
 
 if [ ! -d "${2}/${OUTPUTDIR}" ]; then
-    mkdir "${2}/{OUTPUTDIR}" 
+    mkdir "${2}/${OUTPUTDIR}" 
 else
     #we want to remove old files
     rm -f "${2}/${OUTPUTDIR}/*"
