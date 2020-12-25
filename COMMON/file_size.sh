@@ -26,19 +26,8 @@
 ## Execute this script.
 ## Result file is  ./output_intrajp/data_file_size_final
 ##
-## Version: v0.1.3
+## Version: v0.1.4
 ## Written by Shintaro Fujiwara
-#################################
-echo "This program creates a file in the current directory as file size by file type."
-echo -n "Directory you want to know file size by file type:"
-read DIRECTORY_GIVEN 
-if [ ! -d "${DIRECTORY_GIVEN}" ]; then
-    echo "${DIRECTORY_GIVEN} does not exist."
-    exit 1
-else
-    echo "${DIRECTORY_GIVEN} exists."
-    echo "I start."
-fi
 #################################
 FILE_BASE_EXISTS="filedir_exists"
 FILEDIR_TYPE="filedir_type"
@@ -57,6 +46,18 @@ FILE_COMPLETE3="${OUTPUTDIR}/file_complete3"
 OUTPUTFILE1="${OUTPUTDIR}/calculated_type_full_name"
 OUTPUTFILE2="${OUTPUTDIR}/calculated_type_final"
 FILE_COMPLETE_FINAL="${OUTPUTDIR}/data_file_size_final"
+#################################
+echo "This program creates a file in the directory './${OUTPUTDIR}' as file size by file type."
+echo -n "Directory you want to know file size by file type (full path):"
+read DIRECTORY_GIVEN 
+if [ ! -d "${DIRECTORY_GIVEN}" ]; then
+    echo "${DIRECTORY_GIVEN} does not exist."
+    echo "Did you pass it as a full path?."
+    exit 1
+else
+    echo "${DIRECTORY_GIVEN} exists."
+    echo "I start."
+fi
 
 ## entry point ##
 
@@ -103,9 +104,26 @@ TYPE_EACH_PRE=""
 TYPE_EACH=""
 
 if [ -d "${OUTPUTDIR}" ]; then
+    echo "${OUTPUTDIR} exists."
+    echo "I remove ${OUTPUTDIR} first."
     rm -rf "${OUTPUTDIR}" 
+    if [ $? -eq 0 ]; then
+        echo "${OUTPUTDIR} was removed."
+    else
+        echo "Something went wrong."
+        exit 1
+    fi
 fi
+
+echo "I create ${OUTPUTDIR}."
 mkdir "${OUTPUTDIR}" 
+
+if [ $? -eq 0 ]; then
+    echo "${OUTPUTDIR} was created."
+else
+    echo "Something went wrong."
+    exit 1
+fi
 
 function mashup_file_size ()
 {
