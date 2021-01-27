@@ -1,0 +1,2 @@
+# search top 20 big files or directories in current directory
+$ du -a . | sort -n -r | head -n 20
