@@ -1,2 +1,12 @@
+Thanks to this page.
+https://unix.stackexchange.com/questions/41550/find-the-total-size-of-certain-files-within-a-directory-branch
+
 # search top 20 big files or directories in current directory
 $ du -a . | sort -n -r | head -n 20
+
+# find file name and sum total size in a single directory
+$ LANG=C; find <directory> -type f -name "<file name>" -exec du -ch {} + | grep total 
+
+# find file name and sum total size in a multiple directories
+$ LANG=C; { find <directory> -type f -name "<filename>" -printf "%s+"; echo 0; } | bc | numfmt --to=si
+

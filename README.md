@@ -8,6 +8,7 @@ COMMON
 ```
 useful commands
 Output file size as byte by file type in a certain directory.
+Other useful commands.
 ```
 
 DHCP
