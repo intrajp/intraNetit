@@ -7,7 +7,7 @@ COMMON
 
 ```
 useful commands
-Output file size as byte by file type in a certain directory.
+Output file size as KBytes by file type in a given directory.
 Other useful commands.
 ```
 
@@ -21,4 +21,4 @@ BIND
 ## Author
 Shintaro Fujiwara
 
-shintaro.fujiwara@gmail.com
+shintaro.fujiwara<at>gmail.com
