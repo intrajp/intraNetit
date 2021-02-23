@@ -18,7 +18,7 @@
 ##  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 ##  02110-1301 USA
 ##
-## Version: v0.1.0
+## Version: v0.1.1
 ## Written by Shintaro Fujiwara
 #################################
 
@@ -70,7 +70,7 @@ function create_output_file()
     while read line
     do
         size_sum=$(grep "${line}" "${SIZE_TYPE_FILE}" | awk '{ sum += $1 } END { print sum }')
-        size_total=$(($size_total + $size_sum))
+        size_total=$((size_total + size_sum))
         echo "${size_sum} ${line}"
     done < "${TYPE_FILE}" >> "${SIZE_CALCULATED_FILE}"
     echo "Showing file size as KBytes in ${1}" > "${FILE_COMPLETE_FINAL}"
