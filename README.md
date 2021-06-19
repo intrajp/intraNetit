@@ -8,6 +8,7 @@ COMMON
 ```
 useful commands
 Output file size as KBytes by file type in a given directory.
+Get CVE info.
 Other useful commands.
 ```
 
