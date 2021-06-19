@@ -39,6 +39,7 @@ fi
 
 wget -O "${CVENUMBER_FILE}" https://nvd.nist.gov/vuln/detail/"${CVENUMBER}"
 sed -i -e 's///g' "${CVENUMBER_FILE}"
+CWEID=$(grep -E "CWE-[0-9]+" "${CVENUMBER_FILE}" | xargs | sed -e 's/.*blank>//g' | sed -e 's/<.*//g' | sed -e 's///g')
 VULNERABILITY_DATE=$(grep -Hrn "vuln-published-on" "${CVENUMBER_FILE}"| awk -F">" '{ print $2 }' | awk -F"<" '{ print $1 }' | sed -e 's///g')
 VULNERABILITY_DATE_YEAR=$(echo "${VULNERABILITY_DATE}" | awk -F"/" '{ print $3"/" }' | sed -e 's///g')
 VULNERABILITY_DATE_MONTH_DAY=$(echo "${VULNERABILITY_DATE}" | awk -F"/" '{ print $1"/"$2 }' | sed -e 's///g')
@@ -64,6 +65,7 @@ echo "ATTACK_VECTOR2:${ATTACK_VECTOR2}"
 SCORE_AND_SEVERITY_VERSION2=$(echo "${VALUE_VERSION2}" | sed -e 's/.*label-.*">//' | sed -e 's/<.*>//' | sed -e 's/^M//g' | xargs)
 SCORE_VERSION2=$(echo "${SCORE_AND_SEVERITY_VERSION2}" | awk -F" " '{ print $1 }' | sed -e 's///g')
 SEVERITY_VERSION2=$(echo "${SCORE_AND_SEVERITY_VERSION2}" | awk -F" " '{ print $2 }' | sed -e 's///g')
+echo "CWEID:${CWEID}"
 echo "SCORE_VERSION2:${SCORE_VERSION2}"
 echo "SEVERITY_VERSION2:${SEVERITY_VERSION2}"
 echo "VECTOR_STRING3:${VECTOR_STRING3}"
