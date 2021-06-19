@@ -18,7 +18,7 @@
 ##  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 ##  02110-1301 USA
 ##
-## Version: v0.0.2
+## Version: v0.0.3
 ## Written by Shintaro Fujiwara
 #################################
 
@@ -60,12 +60,12 @@ echo ""
 echo "CVENUMBER:${CVENUMBER}"
 echo "VULNERABILITY_DATE:${VULNERABILITY_DATE}"
 echo "VULNERABILITY_DESCRIPTION:${VULNERABILITY_DESCRIPTION}"
+echo "CWEID:${CWEID}"
 echo "VECTOR_STRING2:${VECTOR_STRING2}"
 echo "ATTACK_VECTOR2:${ATTACK_VECTOR2}"
 SCORE_AND_SEVERITY_VERSION2=$(echo "${VALUE_VERSION2}" | sed -e 's/.*label-.*">//' | sed -e 's/<.*>//' | sed -e 's/^M//g' | xargs)
 SCORE_VERSION2=$(echo "${SCORE_AND_SEVERITY_VERSION2}" | awk -F" " '{ print $1 }' | sed -e 's///g')
 SEVERITY_VERSION2=$(echo "${SCORE_AND_SEVERITY_VERSION2}" | awk -F" " '{ print $2 }' | sed -e 's///g')
-echo "CWEID:${CWEID}"
 echo "SCORE_VERSION2:${SCORE_VERSION2}"
 echo "SEVERITY_VERSION2:${SEVERITY_VERSION2}"
 echo "VECTOR_STRING3:${VECTOR_STRING3}"
