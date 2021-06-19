@@ -18,7 +18,7 @@
 ##  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 ##  02110-1301 USA
 ##
-## Version: v0.0.3
+## Version: v0.0.4
 ## Written by Shintaro Fujiwara
 #################################
 
@@ -56,6 +56,14 @@ get_access_vector "${ATTACK_VECTOR3}"
 ATTACK_VECTOR3="${AV}"
 VALUE_VERSION2=$(grep -Hrn "version=2" "${CVENUMBER_FILE}")
 VALUE_VERSION3=$(grep -Hrn "version=3" "${CVENUMBER_FILE}" -A2)
+SCORE_AND_SEVERITY_VERSION2=$(echo "${VALUE_VERSION2}" | sed -e 's/.*label-.*">//' | sed -e 's/<.*>//' | sed -e 's/^M//g' | xargs)
+SCORE_VERSION2=$(echo "${SCORE_AND_SEVERITY_VERSION2}" | awk -F" " '{ print $1 }' | sed -e 's///g')
+SEVERITY_VERSION2=$(echo "${SCORE_AND_SEVERITY_VERSION2}" | awk -F" " '{ print $2 }' | sed -e 's///g')
+VALUE_VERSION3=$(echo "${VALUE_VERSION3}")
+SCORE_VERSION3=$(echo "${VALUE_VERSION3}" | awk -F"class=\"label" '{ print $2 }' | awk -F">" '{ print $2 }' | awk -F"<" '{ print $1 }' | sed -e 's///g')
+SCORE_AND_SEVERITY_VERSION3=$(echo "${SCORE_VERSION3}" | sed -e 's///g' |xargs)
+SCORE_VERSION3=$(echo "${SCORE_AND_SEVERITY_VERSION3}" | awk -F " " '{ print $1 }' | sed -e 's///g')
+SEVERITY_VERSION3=$(echo "${SCORE_AND_SEVERITY_VERSION3}" | awk -F" " '{ print $2 }' | sed -e 's///g')
 echo ""
 echo "CVENUMBER:${CVENUMBER}"
 echo "VULNERABILITY_DATE:${VULNERABILITY_DATE}"
@@ -63,20 +71,13 @@ echo "VULNERABILITY_DESCRIPTION:${VULNERABILITY_DESCRIPTION}"
 echo "CWEID:${CWEID}"
 echo "VECTOR_STRING2:${VECTOR_STRING2}"
 echo "ATTACK_VECTOR2:${ATTACK_VECTOR2}"
-SCORE_AND_SEVERITY_VERSION2=$(echo "${VALUE_VERSION2}" | sed -e 's/.*label-.*">//' | sed -e 's/<.*>//' | sed -e 's/^M//g' | xargs)
-SCORE_VERSION2=$(echo "${SCORE_AND_SEVERITY_VERSION2}" | awk -F" " '{ print $1 }' | sed -e 's///g')
-SEVERITY_VERSION2=$(echo "${SCORE_AND_SEVERITY_VERSION2}" | awk -F" " '{ print $2 }' | sed -e 's///g')
 echo "SCORE_VERSION2:${SCORE_VERSION2}"
 echo "SEVERITY_VERSION2:${SEVERITY_VERSION2}"
 echo "VECTOR_STRING3:${VECTOR_STRING3}"
 echo "ATTACK_VECTOR3:${ATTACK_VECTOR3}"
-VALUE_VERSION3=$(echo "${VALUE_VERSION3}")
-SCORE_VERSION3=$(echo "${VALUE_VERSION3}" | awk -F"class=\"label" '{ print $2 }' | awk -F">" '{ print $2 }' | awk -F"<" '{ print $1 }' | sed -e 's///g')
-SCORE_AND_SEVERITY_VERSION3=$(echo "${SCORE_VERSION3}" | sed -e 's///g' |xargs)
-SCORE_VERSION3=$(echo "${SCORE_AND_SEVERITY_VERSION3}" | awk -F " " '{ print $1 }' | sed -e 's///g')
-SEVERITY_VERSION3=$(echo "${SCORE_AND_SEVERITY_VERSION3}" | awk -F" " '{ print $2 }' | sed -e 's///g')
 echo "SCORE_VERSION3:${SCORE_VERSION3}"
 echo "SEVERITY_VERSION3:${SEVERITY_VERSION3}"
+
 unlink "${CVENUMBER_FILE}"
 
 exit 0
