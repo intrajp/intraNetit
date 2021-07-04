@@ -47,13 +47,19 @@ VULNERABILITY_DATE=$(echo "${VULNERABILITY_DATE_YEAR}${VULNERABILITY_DATE_MONTH_
 VULNERABILITY_DESCRIPTION=$(grep -Hrn "vuln-analysis-description\"" "${CVENUMBER_FILE}")
 VULNERABILITY_DESCRIPTION=$(echo "${VULNERABILITY_DESCRIPTION}" | awk -F">" '{ print $2 }' | awk -F"<" '{ print $1 }' | sed -e 's///g')
 VECTOR_STRING2=$(grep -Hrn "tooltipCvss2NistMetrics\">(AV" "${CVENUMBER_FILE}" | sed -e 's/.*>(//' | sed -e 's/).*//' | sed -e 's///g')
-VECTOR_STRING3=$(grep -Hrn "CVSS\:3" "${CVENUMBER_FILE}" | sed -e 's/.*Metrics">//' | sed -e 's/<.*>//' | sed -e 's///g')
-ATTACK_VECTOR2=$(echo "${VECTOR_STRING2}" | awk -F":" '{ print $2 }' | awk -F"/" '{ print $1}' | sed -e 's///g')
-ATTACK_VECTOR3=$(echo "${VECTOR_STRING3}" | awk -F"/" '{ print $2 }' | awk -F":" '{ print $2}' | sed -e 's///g')
-get_access_vector "${ATTACK_VECTOR2}"
-ATTACK_VECTOR2="${AV}"
-get_access_vector "${ATTACK_VECTOR3}"
-ATTACK_VECTOR3="${AV}"
+VECTOR_STRING31=$(grep -Hrn "CVSS\:3.1" "${CVENUMBER_FILE}" | sed -e 's/.*Metrics">//' | sed -e 's/<.*>//' | sed -e 's///g')
+VECTOR_STRING30=$(grep -Hrn "CVSS\:3.0" "${CVENUMBER_FILE}" | sed -e 's/.*Metrics">//' | sed -e 's/<.*>//' | sed -e 's///g')
+ACCESS_VECTOR2=$(echo "${VECTOR_STRING2}" | awk -F":" '{ print $2 }' | awk -F"/" '{ print $1}' | sed -e 's///g')
+if [ "${VECTOR_STRING31}" != "" ]; then
+    VECTOR_STRING3="${VECTOR_STRING31}"
+elif [ "${VECTOR_STRING30}" != "" ]; then
+    VECTOR_STRING3="${VECTOR_STRING30}"
+fi
+ACCESS_VECTOR3=$(echo "${VECTOR_STRING3}" | awk -F"/" '{ print $2 }' | awk -F":" '{ print $2}' | sed -e 's///g')
+get_access_vector "${ACCESS_VECTOR2}"
+ACCESS_VECTOR2="${AV}"
+get_access_vector "${ACCESS_VECTOR3}"
+ACCESS_VECTOR3="${AV}"
 VALUE_VERSION2=$(grep -Hrn "version=2" "${CVENUMBER_FILE}")
 VALUE_VERSION3=$(grep -Hrn "version=3" "${CVENUMBER_FILE}" -A2)
 SCORE_AND_SEVERITY_VERSION2=$(echo "${VALUE_VERSION2}" | sed -e 's/.*label-.*">//' | sed -e 's/<.*>//' | sed -e 's/^M//g' | xargs)
@@ -70,11 +76,11 @@ echo "VULNERABILITY_DATE:${VULNERABILITY_DATE}"
 echo "VULNERABILITY_DESCRIPTION:${VULNERABILITY_DESCRIPTION}"
 echo "CWEID:${CWEID}"
 echo "VECTOR_STRING2:${VECTOR_STRING2}"
-echo "ATTACK_VECTOR2:${ATTACK_VECTOR2}"
+echo "ACCESS_VECTOR2:${ACCESS_VECTOR2}"
 echo "SCORE_VERSION2:${SCORE_VERSION2}"
 echo "SEVERITY_VERSION2:${SEVERITY_VERSION2}"
 echo "VECTOR_STRING3:${VECTOR_STRING3}"
-echo "ATTACK_VECTOR3:${ATTACK_VECTOR3}"
+echo "ACCESS_VECTOR3:${ACCESS_VECTOR3}"
 echo "SCORE_VERSION3:${SCORE_VERSION3}"
 echo "SEVERITY_VERSION3:${SEVERITY_VERSION3}"
 
