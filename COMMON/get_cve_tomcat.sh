@@ -18,7 +18,7 @@
 ##  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 ##  02110-1301 USA
 ##
-## Version: v0.0.1
+## Version: v0.0.2
 ## Written by Shintaro Fujiwara
 #################################
 
@@ -43,8 +43,8 @@ wget -O "${FILENAME7}" https://tomcat.apache.org/"${FILENAME7}"
 wget -O "${FILENAME8}" https://tomcat.apache.org/"${FILENAME8}"
 wget -O "${FILENAME9}" https://tomcat.apache.org/"${FILENAME9}"
 
-grep -Hrn "Important\|Moderate\|Low" "${FILENAME7}" -A 2 | grep -v "Important\|Moderate\|Low" | grep "CVE" | sed -e 's/.*nofollow">//' |sed -e 's/<.*>//' > "${FILENAME7_CVE}"
-grep -Hrn "Important\|Moderate\|Low" "${FILENAME8}" -A 2 | grep -v "Important\|Moderate\|Low" | grep "CVE" | sed -e 's/.*nofollow">//' |sed -e 's/<.*>//' > "${FILENAME8_CVE}"
-grep -Hrn "Important\|Moderate\|Low" "${FILENAME9}" -A 2 | grep -v "Important\|Moderate\|Low" | grep "CVE" | sed -e 's/.*nofollow">//' |sed -e 's/<.*>//' > "${FILENAME9_CVE}"
+grep -Hrn "High\|Important\|Moderate\|Low" "${FILENAME7}" -A 2 | grep -v "High\|Important\|Moderate\|Low" | grep "CVE" | sed -e 's/.*nofollow">//' |sed -e 's/<.*>//' > "${FILENAME7_CVE}"
+grep -Hrn "High\|Important\|Moderate\|Low" "${FILENAME8}" -A 2 | grep -v "High\|Important\|Moderate\|Low" | grep "CVE" | sed -e 's/.*nofollow">//' |sed -e 's/<.*>//' > "${FILENAME8_CVE}"
+grep -Hrn "High\|Important\|Moderate\|Low" "${FILENAME9}" -A 2 | grep -v "High\|Important\|Moderate\|Low" | grep "CVE" | sed -e 's/.*nofollow">//' |sed -e 's/<.*>//' > "${FILENAME9_CVE}"
 
 exit 0
